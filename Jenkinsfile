@@ -38,12 +38,12 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Configure DMVPN...'
-                  ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
+                  ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
 
             }
             steps {
                 echo 'Check DMVPN...'
-                  ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
+                  ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
 
             }
         }
