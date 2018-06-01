@@ -19,7 +19,7 @@ pipeline {
                     extensions: [[$class: 'RelativeTargetDirectory',
                         relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
-                    userRemoteConfigs: [[url: 'ssh://git@github.com:ismc/inventory-scarter.git']]])
+                    userRemoteConfigs: [[url: 'git@github.com:ismc/inventory-scarter.git']]])
                 sh 'ln -s $PWD network-dmvpn'
             }
         }
