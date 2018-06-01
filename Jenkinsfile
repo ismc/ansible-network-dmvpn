@@ -15,15 +15,6 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
-/*
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/master']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'RelativeTargetDirectory',
-                        relativeTargetDir: 'network-dmvpn']],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[url: 'https://github.com/network-devops/network-dmvpn.git']]])
-*/
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/master']],
                     doGenerateSubmoduleConfigurations: false,
