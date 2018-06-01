@@ -15,11 +15,9 @@ pipeline {
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/master']],
                     doGenerateSubmoduleConfigurations: false,
-                    credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa',
-                    extensions: [[$class: 'RelativeTargetDirectory',
-                        relativeTargetDir: 'inventory']],
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
-                    userRemoteConfigs: [[url: 'git@github.com:ismc/inventory-scarter.git']]])
+                    userRemoteConfigs: [[credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', url: 'git@github.com:network-devops/network-dmvpn.git']]])
                 sh 'ln -s $PWD network-dmvpn'
             }
         }
