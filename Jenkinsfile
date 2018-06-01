@@ -16,22 +16,22 @@ pipeline {
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
-                    userRemoteConfigs: [[credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', url: 'git@github.com:ismc/inventory-scarter.git']]])
+                    userRemoteConfigs: [[credentialsId: 'scarter-jenkins_key', url: 'git@github.com:ismc/inventory-scarter.git']]])
                 sh 'ln -s $PWD .'
             }
         }
         stage('Run Tests') {
             steps {
                 echo 'Configure DMVPN...'
-                  ansiblePlaybook credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
+                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
                 echo 'Check DMVPN...'
-                  ansiblePlaybook credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
+                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
             }
         }
     }
     post {
         always {
-            echo 'Cleaning Workspace...'
+            echo 'Clean Workspace'
             deleteDir()
         }
     }
