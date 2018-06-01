@@ -16,7 +16,7 @@ pipeline {
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
-                    userRemoteConfigs: [[credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', url: 'git@github.com:network-devops/network-dmvpn.git']]])
+                    userRemoteConfigs: [[credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', url: 'git@github.com:ismc/inventory-scarter.git']]])
                 sh 'ln -s $PWD .'
             }
         }
