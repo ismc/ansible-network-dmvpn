@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    options {
+      skipDefaultCheckout()
+      disableConcurrentBuilds()
+      ansiColor('xterm')
+    }
+    environment {
+      ANSIBLE_ROLES_PATH = "${env.WORKSPACE}"
+      ANSIBLE_INVENTORY_DIR = "${env.WORKSPACE}/inventory"
+    }
+    sshagent(['56de1652-01f3-4a6f-9615-e7d5aab840aa']) {
+      sh 'ssh -o StrictHostKeyChecking=no -l remoteusername remotetarget uname -a'
+    }
+    stages {
+        stage('Prepare Workspace') {
+            steps {
+/*
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/master']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'RelativeTargetDirectory',
+                        relativeTargetDir: 'network-dmvpn']],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[url: 'https://github.com/network-devops/network-dmvpn.git']]])
+*/
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/master']],
+                    doGenerateSubmoduleConfigurations: false,
+                    credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa',
+                    extensions: [[$class: 'RelativeTargetDirectory',
+                        relativeTargetDir: 'inventory']],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[url: 'git@github.com:ismc/inventory-scarter.git']]])
+                sh 'ln -s $PWD network-dmvpn'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                echo 'Configure DMVPN...'
+                  ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
+
+            }
+            steps {
+                echo 'Check DMVPN...'
+                  ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
+
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning Workspace...'
+            deleteDir()
+        }
+    }
+}

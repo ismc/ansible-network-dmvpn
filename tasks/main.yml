@@ -1,0 +1,14 @@
+---
+- debug: var=dmvpn_node_type
+- debug: var=dmvpn_tunnel_ip
+- debug: var=dmvpn_loopback_ip
+- debug: msg="network {{ dmvpn_loopback_ip | ipaddr('address') }} {{ dmvpn_loopback_ip | ipaddr('hostmask') }}"
+- debug: var=dmvpn_hub_tunnel_ip
+- debug: var=dmvpn_hub_ip
+- debug: var=dmvpn_tunnel_interface
+- debug: var=dmvpn_site_networks
+- set_fact:
+    network: "{{ interfaces.1.ip | ipaddr('network') }}/{{ interfaces.1.ip | ipaddr('prefix') }}"
+- debug: msg="network {{ network | ipaddr('network') }} {{ network | ipaddr('hostmask') }}"
+
+- include_tasks: "{{ ansible_network_os }}-dmvpn.yml"

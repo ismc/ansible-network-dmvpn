@@ -1,0 +1,4 @@
+---
+dmvpn_node_type: spoke
+dmvpn_loopback_number: 0
+dmvpn_tunnel_number: 0

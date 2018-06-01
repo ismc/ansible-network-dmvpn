@@ -1,0 +1,52 @@
+!
+crypto isakmp policy 10
+ encryption aes 256
+ hash sha256
+ authentication pre-share
+ group 2
+crypto isakmp key {{ dmvpn_preshared_key }} address 0.0.0.0
+crypto isakmp keepalive 30
+!
+crypto ipsec transform-set xform esp-aes 256 esp-sha256-hmac
+ mode transport
+!
+crypto ipsec profile ipsec-prof
+ set transform-set xform
+!
+{% if dmvpn_loopback_ip is defined and dmvpn_loopback_ip %}
+interface Loopback{{ dmvpn_loopback_number }}
+ ip address {{ dmvpn_loopback_ip | ipaddr('address') }} {{ dmvpn_loopback_ip | ipaddr('netmask') }}
+!
+{% endif %}
+interface Tunnel{{ dmvpn_tunnel_number }}
+ ip address {{ dmvpn_tunnel_ip | ipaddr('address') }} {{ dmvpn_tunnel_ip | ipaddr('netmask') }}
+ no ip redirects
+ ip mtu 1400
+{% if dmvpn_node_type == 'hub'%}
+ ip nhrp redirect
+{% elif dmvpn_node_type == 'spoke'%}
+ ip nhrp nhs {{ dmvpn_hub_tunnel_ip | ipaddr('address') }} nbma {{ dmvpn_hub_ip | ipaddr('address') }} multicast
+ ip nhrp shortcut
+{% endif %}
+ ip nhrp network-id 1
+ ip nhrp map multicast dynamic
+ ip tcp adjust-mss 1360
+ tunnel source {{ dmvpn_tunnel_interface }}
+ tunnel mode gre multipoint
+ tunnel key 1
+ tunnel protection ipsec profile ipsec-prof
+!
+router eigrp {{ dmvpn_tunnel_number }}
+ network {{ dmvpn_tunnel_ip | ipaddr('network') }} {{ dmvpn_tunnel_ip | ipaddr('hostmask') }}
+ network {{ dmvpn_loopback_ip | ipaddr('address') }} {{ dmvpn_loopback_ip | ipaddr('hostmask') }}
+{% for network in dmvpn_site_networks %}
+ network {{ network | ipaddr('network') }} {{ network | ipaddr('hostmask') }}
+{% endfor %}
+ passive-interface default
+ no passive-interface Tunnel{{ dmvpn_tunnel_number }}
+{% if dmvpn_node_type == 'spoke'%}
+ eigrp stub connected
+{% endif %}
+!
+end
+!

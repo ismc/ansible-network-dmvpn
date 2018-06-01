@@ -1,0 +1,8 @@
+---
+- template:
+    src: "ios-dmvpn.j2"
+    dest: "/tmp/{{ inventory_hostname }}-dmvpn"
+
+- name: Apply IOS DMVPN template ios-dmvpn.j2
+  ios_config:
+    src: "ios-dmvpn.j2"
