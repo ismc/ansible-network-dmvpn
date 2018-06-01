@@ -1,12 +1,11 @@
 pipeline {
     agent any
     options {
-      skipDefaultCheckout()
       disableConcurrentBuilds()
       ansiColor('xterm')
     }
     environment {
-      ANSIBLE_ROLES_PATH = "${env.WORKSPACE}"
+      ANSIBLE_ROLES_PATH = ".."
       ANSIBLE_INVENTORY_DIR = "${env.WORKSPACE}/inventory"
     }
     stages {
@@ -18,7 +17,6 @@ pipeline {
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
                     userRemoteConfigs: [[credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa', url: 'git@github.com:network-devops/network-dmvpn.git']]])
-                sh 'ln -s $PWD network-dmvpn'
             }
         }
         stage('Run Tests') {
