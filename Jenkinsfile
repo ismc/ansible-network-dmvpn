@@ -9,9 +9,6 @@ pipeline {
       ANSIBLE_ROLES_PATH = "${env.WORKSPACE}"
       ANSIBLE_INVENTORY_DIR = "${env.WORKSPACE}/inventory"
     }
-    sshagent(['56de1652-01f3-4a6f-9615-e7d5aab840aa']) {
-      sh 'ssh -o StrictHostKeyChecking=no -l remoteusername remotetarget uname -a'
-    }
     stages {
         stage('Prepare Workspace') {
             steps {
@@ -27,12 +24,12 @@ pipeline {
             }
         }
         stage('Run Tests') {
+            sshagent(['56de1652-01f3-4a6f-9615-e7d5aab840aa']) {
+              sh 'ssh -o StrictHostKeyChecking=no -l remoteusername remotetarget uname -a'
+            }
             steps {
                 echo 'Configure DMVPN...'
                   ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
-
-            }
-            steps {
                 echo 'Check DMVPN...'
                   ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
 
