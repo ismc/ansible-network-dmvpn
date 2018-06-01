@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sshagent(['56de1652-01f3-4a6f-9615-e7d5aab840aa']) {
+                withCredentials([sshUserPrivateKey(credentialsId: '56de1652-01f3-4a6f-9615-e7d5aab840aa')]) {
                     echo 'Configure DMVPN...'
                       ansiblePlaybook colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
                     echo 'Check DMVPN...'
