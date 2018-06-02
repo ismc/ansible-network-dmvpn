@@ -31,13 +31,13 @@ pipeline {
         stage('Deploy DMVPN') {
             steps {
                 echo 'Configure DMVPN...'
-                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/jenkins-wan-testbed.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
+                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/jenkins-wan-testbed", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
             }
         }
         stage('Run Tests') {
             steps {
                 echo 'Check DMVPN...'
-                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/jenkins-wan-testbed.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
+                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/jenkins-wan-testbed", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
             }
         }
     }
