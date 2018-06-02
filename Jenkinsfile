@@ -32,7 +32,7 @@ pipeline {
     post {
         always {
             echo 'Clean Workspace'
-            deleteDir()
+            /* deleteDir() */
         }
     }
 }
