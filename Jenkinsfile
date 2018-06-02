@@ -17,7 +17,7 @@ pipeline {
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
                     userRemoteConfigs: [[credentialsId: 'scarter-jenkins_key', url: 'git@github.com:ismc/inventory-scarter.git']]])
-                sh 'ln -sf $PWD .'
+                sh 'ln -sf $PWD network-dmvpn'
             }
         }
         stage('Run Tests') {
