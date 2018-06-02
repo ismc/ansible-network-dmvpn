@@ -2,6 +2,7 @@ pipeline {
     agent any
     options {
       disableConcurrentBuilds()
+      skipDefaultCheckout()
       ansiColor('xterm')
     }
     environment {
@@ -11,13 +12,20 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: scm.branches,
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'network-dmvpn']],
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/master']],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'inventory']],
                     submoduleCfg: [],
-                    userRemoteConfigs: [[credentialsId: 'scarter-jenkins_key', url: 'git@github.com:ismc/inventory-scarter.git']]])
-                sh 'ln -sf $PWD network-dmvpn'
+                    userRemoteConfigs: [[credentialsId: 'scarter-jenkins_key', url: 'git@github.com:ismc/inventory-test.git']]
+                ])
             }
         }
         stage('Deploy DMVPN') {
