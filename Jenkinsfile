@@ -4,6 +4,7 @@ pipeline {
       disableConcurrentBuilds()
       skipDefaultCheckout()
       ansiColor('xterm')
+      lock resource: 'shared_resource_lock'
     }
     environment {
       ANSIBLE_ROLES_PATH = "${env.WORKSPACE}"
@@ -12,8 +13,7 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
+                checkout([$class: 'GitSCM',
                     branches: scm.branches,
                     doGenerateSubmoduleConfigurations: false,
                     extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'network-dmvpn']],
@@ -31,13 +31,13 @@ pipeline {
         stage('Deploy DMVPN') {
             steps {
                 echo 'Configure DMVPN...'
-                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
+                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/jenkins-wan-testbed.yml", playbook: 'network-dmvpn/tests/network-dmvpn.yml'
             }
         }
         stage('Run Tests') {
             steps {
                 echo 'Check DMVPN...'
-                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/wan-test.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
+                  ansiblePlaybook credentialsId: 'scarter-jenkins_key', colorized: true, limit: 'network', disableHostKeyChecking: true, inventory: "${env.ANSIBLE_INVENTORY_DIR}/jenkins-wan-testbed.yml", playbook: 'network-dmvpn/tests/network-dmvpn-check.yml'
             }
         }
     }
