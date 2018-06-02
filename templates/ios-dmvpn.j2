@@ -36,7 +36,14 @@ interface Tunnel{{ dmvpn_tunnel_number }}
  tunnel key 1
  tunnel protection ipsec profile ipsec-prof
 !
+{% if dmvpn_node_type == 'hub'%}
+ ip route {{ dmvpn_network | ipaddr('network') }} {{ dmvpn_network | ipaddr('netmask') }} Null0
+{% endif %}
+!
 router eigrp {{ dmvpn_tunnel_number }}
+{% if dmvpn_node_type == 'hub'%}
+ network {{ dmvpn_network | ipaddr('network') }} {{ dmvpn_network | ipaddr('hostmask') }}
+{% endif %}
  network {{ dmvpn_tunnel_ip | ipaddr('network') }} {{ dmvpn_tunnel_ip | ipaddr('hostmask') }}
  network {{ dmvpn_loopback_ip | ipaddr('address') }} {{ dmvpn_loopback_ip | ipaddr('hostmask') }}
 {% for network in dmvpn_site_networks %}
