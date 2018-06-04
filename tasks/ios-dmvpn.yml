@@ -1,5 +1,6 @@
 ---
-- template:
+- name: Create template for debugging
+  template:
     src: "ios-dmvpn.j2"
     dest: "/tmp/{{ inventory_hostname }}-dmvpn"
 
