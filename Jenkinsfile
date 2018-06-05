@@ -44,9 +44,11 @@ pipeline {
     post {
         success {
             sparkSend credentialsId: 'JenkinsBot', message: 'Build Passed', messageType: 'text', spaceList: [[spaceId: '9497be70-6046-11e8-917a-5b14497369c2', spaceName: 'DEVNET-2076']]
-        } failure {
+        }
+        failure {
             sparkSend credentialsId: 'JenkinsBot', message: 'Build Failed', messageType: 'text', spaceList: [[spaceId: '9497be70-6046-11e8-917a-5b14497369c2', spaceName: 'DEVNET-2076']]
-        } always {
+        }
+        always {
             echo 'Clean Workspace'
         }
     }
