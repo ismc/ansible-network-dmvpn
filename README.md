@@ -59,65 +59,7 @@ Including an example of how to use your role (for instance, with variables passe
             dmvpn_site_networks:
               - "{{ interfaces.1.ip | ipaddr('network') }}/{{ interfaces.1.ip | ipaddr('prefix') }}"
 
-## Cloud Models
 
-The cloud model is a cloud-agnostic data model that describes the particlar cloud deployment.  It creates the container network (e.g. VPC), the subnets, adds routes, security groups, etc.  It also contains instances, but this is mainly to deploy VNFs and service nodes.
-
-### Cloud Model Example
-
-    cloud_acls:
-      host-acl:
-        - { src_ip: 0.0.0.0/0, dst_ports: 22, proto: tcp }
-        - { src_ip: 0.0.0.0/0, dst_ports: 443, proto: tcp }
-        - { src_ip: 0.0.0.0/0, proto: icmp }
-      rtr-acl:
-        - { src_ip: 0.0.0.0/0, proto: all }
-    vpc_list:
-      - name: "{{ cloud_name }}"
-        provider: "{{ cloud_provider }}"
-        region: "{{ cloud_region }}"
-        project: "{{ cloud_name }}"
-        cidr: "{{ cloud_cidr }}"
-        networks:
-          - name: "outside.{{ cloud_name }}"
-            cidr: "{{ cloud_cidr | ipsubnet(24, 0) }}"
-            az: "{{ cloud_region }}a"
-          - name: "inside.{{ cloud_name }}"
-            cidr: "{{ cloud_cidr | ipsubnet(24, 1) }}"
-            az: "{{ cloud_region }}a"
-            routes:
-              - cidr: "0.0.0.0/0"
-                instance: "rtr1.{{ cloud_name }}"
-                if_index: 2
-        instances:
-          - name: "rtr1.{{ cloud_name }}"
-            size: medium
-            image: csr-byol
-            interfaces:
-              - name: GigabitEthernet1
-                subnet: "outside.{{ cloud_name }}"
-                acl: rtr-acl
-                public_ip: true
-                private_ip: "{{ cloud_cidr | ipsubnet(24, 0) | ipaddr(-2) | ipaddr('address') }}"
-              - name: GigabitEthernet2
-                subnet: "inside.{{ cloud_name }}"
-                acl: rtr-acl
-                public_ip: true
-                private_ip: "{{ cloud_cidr | ipsubnet(24, 1) | ipaddr(-2) | ipaddr('address') }}"
-            tags:
-              network_os: ios
-              groups: network,routers,spoke_routers
-            user_data: "{{ lookup('file', 'csr.user_data') }}"
-          - name: "host1.{{ cloud_name }}"
-            size: micro
-            image: rhel7
-            interfaces:
-              - name: eth0
-                subnet: "inside.{{ cloud_name }}"
-                acl: host-acl
-                private_ip: "{{ cloud_cidr | ipsubnet(24, 2) | ipaddr(10) | ipaddr('address') }}"
-            tags:
-              groups: hosts
 
 ## License
 
