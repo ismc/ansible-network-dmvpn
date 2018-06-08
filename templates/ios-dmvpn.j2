@@ -28,6 +28,7 @@ interface Tunnel{{ dmvpn_tunnel_number }}
  ip nhrp nhs {{ dmvpn_hub_tunnel_ip | ipaddr('address') }} nbma {{ dmvpn_hub_ip | ipaddr('address') }} multicast
  ip nhrp shortcut
 {% endif %}
+ ip nhrp authentication {{ dmvpn_preshared_key }}
  ip nhrp network-id 1
  ip nhrp map multicast dynamic
  ip tcp adjust-mss 1360
