@@ -8,8 +8,8 @@
         name: network-dmvpn
       vars:
         dmvpn_node_type: spoke
-        dmvpn_tunnel_ip: "{{ dmvpn_tunnel_network | ipaddr(site_number|int + 1) }}"
-        dmvpn_loopback_ip: "{{ dmvpn_loopback_network | ipaddr(site_number|int + 1) | ipaddr('address')}}/32"
+        dmvpn_tunnel_ip: "{{ dmvpn_tunnel_network | ipaddr(dmvpn_site_number|int + 1) }}"
+        dmvpn_loopback_ip: "{{ dmvpn_loopback_network | ipaddr(dmvpn_site_number|int + 1) | ipaddr('address')}}/32"
         dmvpn_hub_tunnel_ip: "{{ dmvpn_tunnel_network | ipaddr(1) }}"
         dmvpn_hub_ip: "{{ hostvars[hub_router].ansible_host }}"
         dmvpn_tunnel_interface: "{{ interfaces.0.name }}"
@@ -23,8 +23,8 @@
         name: network-dmvpn
       vars:
         dmvpn_node_type: hub
-        dmvpn_tunnel_ip: "{{ dmvpn_tunnel_network | ipaddr(site_number|int + 1) }}"
-        dmvpn_loopback_ip: "{{ dmvpn_loopback_network | ipaddr(site_number|int + 1) | ipaddr('address')}}/32"
+        dmvpn_tunnel_ip: "{{ dmvpn_tunnel_network | ipaddr(dmvpn_site_number|int + 1) }}"
+        dmvpn_loopback_ip: "{{ dmvpn_loopback_network | ipaddr(dmvpn_site_number|int + 1) | ipaddr('address')}}/32"
         dmvpn_hub_tunnel_ip: "{{ dmvpn_tunnel_network | ipaddr(1) }}"
         dmvpn_tunnel_interface: "{{ interfaces.0.name }}"
         dmvpn_site_networks:
