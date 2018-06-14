@@ -26,7 +26,7 @@ interface Tunnel{{ dmvpn_tunnel_number }}
  ip nhrp redirect
 {% elif dmvpn_node_type == 'spoke'%}
  ip nhrp nhs {{ dmvpn_hub_tunnel_ip | ipaddr('address') }} nbma {{ dmvpn_hub_ip | ipaddr('address') }} multicast
- no ip nhrp shortcut
+ ip nhrp shortcut
 {% endif %}
  ip nhrp authentication {{ dmvpn_preshared_key }}
  ip nhrp network-id 1
