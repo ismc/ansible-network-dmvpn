@@ -23,7 +23,7 @@ interface Tunnel{{ dmvpn_tunnel_number }}
  no ip redirects
  ip mtu 1400
 {% if dmvpn_node_type == 'hub'%}
- ip nhrp redirect
+ no ip nhrp redirect
 {% elif dmvpn_node_type == 'spoke'%}
  ip nhrp nhs {{ dmvpn_hub_tunnel_ip | ipaddr('address') }} nbma {{ dmvpn_hub_ip | ipaddr('address') }} multicast
  ip nhrp shortcut
